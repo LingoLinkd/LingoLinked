@@ -1,9 +1,21 @@
 ## Contributing
 
-### Workflow
-- Create a branch: `feature/<name>` or `bug-patch/<name>` or `bug/<name>` or `documentation/<name>` or `<relevant-branch-name>/<name>`
-- Open a PR early (draft is fine)
-- Request review from teammates
+### Branch Naming Convention
+
+Use the following format:
+
+- `feature/<short-description>`
+- `fix/<short-description>`
+- `chore/<short-description>`
+- `docs/<short-description>`
+
+Examples:
+- `feature/user-auth`
+- `fix/login-crash`
+- `chore/update-deps`
+- `docs/readme-setup`
+
+If you have a security concern please reach out privately
 
 ### Local Setup
 1. `TO DO`
@@ -16,3 +28,4 @@
 - Small, focused changes
 - Link the issue 
 - Include testing notes
+- Include any other relevant documentation to your best judgement
