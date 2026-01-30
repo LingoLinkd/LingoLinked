@@ -8,12 +8,14 @@ Use the following format:
 - `fix/<short-description>`
 - `chore/<short-description>`
 - `docs/<short-description>`
+- `misc/<short-description>`
 
 Examples:
 - `feature/user-auth`
 - `fix/login-crash`
 - `chore/update-deps`
 - `docs/readme-setup`
+- `misc/temporary-logging`
 
 If you have a security concern please reach out privately
 
