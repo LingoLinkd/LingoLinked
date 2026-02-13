@@ -7,7 +7,7 @@ labels: chore
 
 ## Chore / Maintenance
 
-> ⚠️ **Template:** replace placeholder text before submitting.
+**Template:** replace placeholder text before submitting.
 
 ---
 

@@ -7,8 +7,8 @@ labels: security
 
 ## Security Issue
 
-> ⚠️ **Template:** replace placeholder text before submitting.  
-> **Do not** include sensitive exploit details in a public issue.
+**Template:** replace placeholder text before submitting.  
+**Do not** include sensitive exploit details in a public issue.
 
 ---
 
