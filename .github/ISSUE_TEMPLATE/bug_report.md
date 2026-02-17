@@ -7,7 +7,7 @@ labels: bug
 
 ## Bug Report
 
-> ⚠️ **Template:** replace placeholder text before submitting.
+**Template:** replace placeholder text before submitting.
 
 ---
 

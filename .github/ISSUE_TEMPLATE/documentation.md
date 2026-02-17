@@ -7,7 +7,7 @@ labels: documentation
 
 ## Documentation Issue
 
-> ⚠️ **Template:** replace placeholder text before submitting.
+**Template:** replace placeholder text before submitting.
 
 ---
 
@@ -25,7 +25,7 @@ Where is the documentation issue located?
 
 Describe what is missing, incorrect, or unclear.
 
-> Example: The README references a command that no longer exists.
+Example: The README references a command that no longer exists.
 
 ---
 
@@ -33,7 +33,7 @@ Describe what is missing, incorrect, or unclear.
 
 Describe how the documentation should be updated or improved.
 
-> Example: Update the example to use the new CLI syntax.
+Example: Update the example to use the new CLI syntax.
 
 ---
 
