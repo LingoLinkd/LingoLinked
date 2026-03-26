@@ -11,6 +11,7 @@ Use the following format:
 - `misc/<short-description>`
 
 Examples:
+
 - `feature/user-auth`
 - `fix/login-crash`
 - `chore/update-deps`
@@ -20,14 +21,17 @@ Examples:
 If you have a security concern please reach out privately
 
 ### Local Setup
+
 1. `TO DO`
 
 ### Testing
+
 - Run: `TO DO`
 - Lint/format: `TO DO`
 
 ### PR Expectations
+
 - Small, focused changes
-- Link the issue 
+- Link the issue
 - Include testing notes
 - Include any other relevant documentation to your best judgement
