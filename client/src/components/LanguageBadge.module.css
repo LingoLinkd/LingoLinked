@@ -1,0 +1,34 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: transform var(--transition-fast);
+  cursor: default;
+}
+
+.badge:hover {
+  transform: scale(1.03);
+}
+
+.known {
+  background: var(--color-secondary-50);
+  color: var(--color-secondary-dark);
+}
+
+.learning {
+  background: var(--color-warning-50);
+  color: #92400e;
+}
+
+.lang {
+  font-weight: 600;
+}
+
+.level {
+  opacity: 0.8;
+  font-size: 0.72rem;
+}
