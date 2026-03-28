@@ -219,7 +219,6 @@ export default function Events() {
                       </span>
                       <span>
                         {event.attendees.length}
-                        //Show cap if one is set, otherwise just show count
                         {event.maxAttendees > 0 ? ` / ${event.maxAttendees}` : ""} attending
                       </span>
                     </div>
@@ -254,7 +253,6 @@ export default function Events() {
                       )}
                     </div>
                   )}
-                  //Show different action button depending on user's relationship to the event
                   <div className={styles.cardActions}>
                     {isOrganizer(event) ? (
                       <span className={styles.organizerBadge}>You are the organizer</span>
