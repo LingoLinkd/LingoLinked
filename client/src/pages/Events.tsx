@@ -289,7 +289,7 @@ export default function Events() {
         </div>
       </main>
 
-      {//Create event modal, closes when clicking outside}
+      {/*Create event modal, closes when clicking outside*/}
       {showCreate && (
         <div
           className={styles.modalOverlay}
