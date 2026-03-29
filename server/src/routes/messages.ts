@@ -4,10 +4,9 @@ import Message from "../models/Message";
 import { authenticate, AuthRequest } from "../middleware/auth";
 import { uploadMessageImage, uploadMessageAudio } from "../middleware/upload";
 
-//Set up router
 const router = Router();
 
-//Get /api/messages/conversations- lists all conversations for current user
+// GET /api/messages/conversations - list all conversations for current user
 router.get(
   "/conversations",
   authenticate,
@@ -19,7 +18,7 @@ router.get(
         .populate("participants", "firstName lastName profilePicture")
         .sort({ lastMessageAt: -1 });
 
-      //Get unread counts for each conversation
+      // Get unread counts for each conversation
       const withUnread = await Promise.all(
         conversations.map(async (conv) => {
           const unreadCount = await Message.countDocuments({
@@ -39,7 +38,7 @@ router.get(
   }
 );
 
-//Get /api/messages/:conversationId- gets messages in a conversation
+// GET /api/messages/:conversationId - get messages in a conversation
 router.get(
   "/:conversationId",
   authenticate,
@@ -60,6 +59,7 @@ router.get(
       const page = parseInt(req.query.page as string) || 1;
       const limit = 50;
       const skip = (page - 1) * limit;
+
       const messages = await Message.find({
         conversation: req.params.conversationId,
       })
@@ -68,7 +68,7 @@ router.get(
         .skip(skip)
         .limit(limit);
 
-      //Mark messages as read
+      // Mark messages as read
       await Message.updateMany(
         {
           conversation: req.params.conversationId,
@@ -86,14 +86,13 @@ router.get(
   }
 );
 
-//Post /api/messages/:conversationId/image- allows sending an image message
+// POST /api/messages/:conversationId/image - send an image message
 router.post(
   "/:conversationId/image",
   authenticate,
   uploadMessageImage.single("image"),
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-      //Look for if conversation exists by id
       const conversation = await Conversation.findById(req.params.conversationId);
       if (!conversation) {
         res.status(404).json({ error: "Conversation not found" });
@@ -110,7 +109,7 @@ router.post(
         res.status(400).json({ error: "No image file provided" });
         return;
       }
-      //Create message with image url
+
       const imageUrl = `/uploads/messages/${req.file.filename}`;
       const message = await Message.create({
         conversation: conversation._id,
@@ -133,7 +132,7 @@ router.post(
   }
 );
 
-//Post /api/messages/:conversationId/audio- allows for sending a voice message
+// POST /api/messages/:conversationId/audio - send a voice message
 router.post(
   "/:conversationId/audio",
   authenticate,
@@ -178,7 +177,7 @@ router.post(
   }
 );
 
-//Posts /api/messages/:conversationId- sends a message
+// POST /api/messages/:conversationId - send a message
 router.post(
   "/:conversationId",
   authenticate,

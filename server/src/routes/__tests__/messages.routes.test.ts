@@ -7,7 +7,8 @@ jest.mock("../../middleware/upload", () => ({
   },
   uploadMessageImage: {
     single: () => (_req: any, _res: any, next: any) => {
-      next();   //by default, simulate no file attached
+      // By default, simulate no file attached
+      next();
     },
   },
   uploadMessageAudio: {
@@ -23,11 +24,9 @@ import Conversation from "../../models/Conversation";
 import Message from "../../models/Message";
 import jwt from "jsonwebtoken";
 
-//Set up test auth info
 const AUTH_HEADER = { Authorization: "Bearer test-token" };
 const CONV_ID = "conv-123";
 
-//Set up mock conversation/message
 const mockConversation = {
   _id: CONV_ID,
   participants: [{ toString: () => "test-user-id" }, { toString: () => "other-user-id" }],
@@ -58,13 +57,13 @@ const mockMessage = {
   }),
 };
 
-//Clear mocks
 beforeEach(() => {
   jest.clearAllMocks();
   (jwt.verify as jest.Mock).mockReturnValue({ userId: "test-user-id" });
 });
 
-//Get /api/messages/conversations functionality
+// ─── GET /api/messages/conversations ─────────────────────────────────────────
+
 describe("GET /api/messages/conversations", () => {
   it("returns list of conversations with unread counts", async () => {
     const sortMock = jest.fn().mockResolvedValue([mockConversation]);
@@ -89,7 +88,8 @@ describe("GET /api/messages/conversations", () => {
   });
 });
 
-//Get /api/messages/:conversationId 
+// ─── GET /api/messages/:conversationId ───────────────────────────────────────
+
 describe("GET /api/messages/:conversationId", () => {
   it("returns messages when user is a participant", async () => {
     (Conversation.findById as jest.Mock).mockResolvedValue(mockConversation);
@@ -153,7 +153,8 @@ describe("GET /api/messages/:conversationId", () => {
   });
 });
 
-//Post /api/messages/:conversationId
+// ─── POST /api/messages/:conversationId ──────────────────────────────────────
+
 describe("POST /api/messages/:conversationId", () => {
   it("sends a text message successfully", async () => {
     (Conversation.findById as jest.Mock).mockResolvedValue({
@@ -233,7 +234,8 @@ describe("POST /api/messages/:conversationId", () => {
   });
 });
 
-//Post /api/messages/:conversationId/image
+// ─── POST /api/messages/:conversationId/image ────────────────────────────────
+
 describe("POST /api/messages/:conversationId/image", () => {
   it("returns 400 when no image file is provided", async () => {
     (Conversation.findById as jest.Mock).mockResolvedValue(mockConversation);
@@ -254,7 +256,8 @@ describe("POST /api/messages/:conversationId/image", () => {
   });
 });
 
-//Post /api/messages/:conversationId/audio 
+// ─── POST /api/messages/:conversationId/audio ────────────────────────────────
+
 describe("POST /api/messages/:conversationId/audio", () => {
   it("returns 400 when no audio file is provided", async () => {
     (Conversation.findById as jest.Mock).mockResolvedValue(mockConversation);
