@@ -20,6 +20,7 @@ import app from "../../app";
 import User from "../../models/User";
 import jwt from "jsonwebtoken";
 
+//Create mock user and auth header
 const AUTH_HEADER = { Authorization: "Bearer test-token" };
 
 const mockUser = {
@@ -44,8 +45,7 @@ beforeEach(() => {
   (jwt.verify as jest.Mock).mockReturnValue({ userId: "test-user-id" });
 });
 
-// ─── GET /api/users/profile ──────────────────────────────────────────────────
-
+//get profile describe
 describe("GET /api/users/profile", () => {
   it("returns 200 with user profile", async () => {
     (User.findById as jest.Mock).mockResolvedValue(mockUser);
@@ -73,8 +73,7 @@ describe("GET /api/users/profile", () => {
   });
 });
 
-// ─── PUT /api/users/profile ──────────────────────────────────────────────────
-
+//profile describe
 describe("PUT /api/users/profile", () => {
   it("updates profile with allowed fields and returns updated user", async () => {
     const updatedUser = { ...mockUser, bio: "Updated bio" };
@@ -121,8 +120,7 @@ describe("PUT /api/users/profile", () => {
   });
 });
 
-// ─── POST /api/users/profile/picture ─────────────────────────────────────────
-
+//post profile picture set
 describe("POST /api/users/profile/picture", () => {
   it("returns 400 when no file is provided", async () => {
     const res = await request(app).post("/api/users/profile/picture").set(AUTH_HEADER);
@@ -132,8 +130,7 @@ describe("POST /api/users/profile/picture", () => {
   });
 });
 
-// ─── GET /api/users/:id ──────────────────────────────────────────────────────
-
+//test getting id
 describe("GET /api/users/:id", () => {
   it("returns 200 with another user's public profile", async () => {
     const selectMock = jest.fn().mockResolvedValue(mockUser);
@@ -158,8 +155,7 @@ describe("GET /api/users/:id", () => {
   });
 });
 
-// ─── GET /api/users ──────────────────────────────────────────────────────────
-
+//test getting list of users
 describe("GET /api/users", () => {
   it("returns a list of users excluding self", async () => {
     const sortMock = jest.fn().mockResolvedValue([mockUser]);
