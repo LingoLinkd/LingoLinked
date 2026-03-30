@@ -17,7 +17,6 @@ import app from "../../app";
 import Event from "../../models/Event";
 import jwt from "jsonwebtoken";
 
-//Create tests with other users, differs from other tests
 const AUTH_HEADER = { Authorization: "Bearer test-token" };
 const TEST_USER_ID = "aaaaaaaaaaaaaaaaaaaaaaaa";
 const ORGANIZER_ID = "bbbbbbbbbbbbbbbbbbbbbbbb";

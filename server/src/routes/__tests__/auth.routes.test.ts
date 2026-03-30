@@ -8,7 +8,6 @@ import jwt from "jsonwebtoken";
 
 const AUTH_HEADER = { Authorization: "Bearer test-token" };
 
-//Create mock users and clear all mocks
 const mockUser = {
   _id: "test-user-id",
   email: "test@rpi.edu",
@@ -23,7 +22,8 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-//describe register endpoint
+// ─── REGISTER ────────────────────────────────────────────────────────────────
+
 describe("POST /api/auth/register", () => {
   it("returns 201 with token and user on successful registration", async () => {
     (User.findOne as jest.Mock).mockResolvedValue(null);
@@ -88,7 +88,8 @@ describe("POST /api/auth/register", () => {
   });
 });
 
-//describe login endpoint
+// ─── LOGIN ───────────────────────────────────────────────────────────────────
+
 describe("POST /api/auth/login", () => {
   it("returns 200 with token on valid credentials", async () => {
     const mockUserWithPassword = {

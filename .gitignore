@@ -1,4 +1,12 @@
 
+# Uploaded files
+server/uploads/profiles/*
+server/uploads/messages/*
+server/uploads/audio/*
+!server/uploads/profiles/.gitkeep
+!server/uploads/messages/.gitkeep
+!server/uploads/audio/.gitkeep
+
 # Logs
 logs
 *.log
@@ -310,6 +318,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.claude/
 
 # added from navigation template
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
@@ -350,3 +359,5 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+

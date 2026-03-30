@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 jest.mock("jsonwebtoken");
 
-//Define middle ware test with mock values
 describe("authenticate middleware", () => {
   let mockReq: Partial<AuthRequest>;
   let mockRes: Partial<Response>;

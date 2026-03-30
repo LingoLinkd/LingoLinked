@@ -2,7 +2,7 @@ import { Response } from "express";
 import { AuthRequest } from "../../middleware/auth";
 import jwt from "jsonwebtoken";
 
-//Mock dependencies before imports
+// Mock dependencies before imports
 jest.mock("../../models/User");
 jest.mock("jsonwebtoken", () => ({
   sign: jest.fn().mockReturnValue("mock-jwt-token"),
@@ -11,7 +11,6 @@ jest.mock("jsonwebtoken", () => ({
 
 import User from "../../models/User";
 
-//Describe auth route handler 
 describe("Auth route handler logic", () => {
   let mockRes: Partial<Response>;
   let jsonFn: jest.Mock;
