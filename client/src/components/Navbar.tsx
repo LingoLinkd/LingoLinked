@@ -7,13 +7,16 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  //Logs out the user and redirects to the login page
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
+  //Derive two-letter avatar initials from first and last name
   const initials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : "";
 
+  //Return navbar
   return (
     <nav className={styles.navbar} aria-label="Main navigation">
       <div className={styles.inner}>

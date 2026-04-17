@@ -1,3 +1,4 @@
+//List of supported languages available in dropdowns throughout the app
 export const LANGUAGES = [
   "Arabic",
   "Bengali",
@@ -28,6 +29,7 @@ export const LANGUAGES = [
   "Vietnamese",
 ] as const;
 
+//Ordered list of proficiency
 export const PROFICIENCY_LEVELS = [
   { value: "beginner", label: "Beginner" },
   { value: "intermediate", label: "Intermediate" },
@@ -36,6 +38,7 @@ export const PROFICIENCY_LEVELS = [
   { value: "native", label: "Native" },
 ] as const;
 
+//Interest list
 export const INTEREST_OPTIONS = [
   "Cultural Exchange",
   "Travel",

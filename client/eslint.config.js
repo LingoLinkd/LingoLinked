@@ -1,3 +1,4 @@
+//Eslint config combining typescript react hooks and prettier rules
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
