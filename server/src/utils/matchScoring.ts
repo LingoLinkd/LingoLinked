@@ -23,10 +23,12 @@ export function computeMatchScore(
         const profLevels = ["beginner", "intermediate", "advanced", "fluent", "native"];
         const knownLevel = profLevels.indexOf(known.proficiency);
         const learningLevel = profLevels.indexOf(learning.proficiency);
+          // positive value means the teacher is more advanced than the learner
         const gap = knownLevel - learningLevel;
 
         if (gap > 0) {
           // The teacher is more proficient than the learner - good match
+          // base 20 points plus 10 for each proficiency level above the learner
           score += 20 + gap * 10;
           if (!sharedLanguages.includes(known.language)) {
             sharedLanguages.push(known.language);
@@ -43,6 +45,7 @@ export function computeMatchScore(
         const profLevels = ["beginner", "intermediate", "advanced", "fluent", "native"];
         const knownLevel = profLevels.indexOf(known.proficiency);
         const learningLevel = profLevels.indexOf(learning.proficiency);
+        // positive value means the teacher is more advanced than the learner
         const gap = knownLevel - learningLevel;
 
         if (gap > 0) {
@@ -58,6 +61,7 @@ export function computeMatchScore(
   }
 
   // Shared interests bonus
+  // set for fast constant time lookup when checking each of userbs interests
   const aInterests = new Set(userA.interests.map((i) => i.toLowerCase()));
   for (const interest of userB.interests) {
     if (aInterests.has(interest.toLowerCase())) {

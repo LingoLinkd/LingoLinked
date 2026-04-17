@@ -1,5 +1,6 @@
 const API_BASE = "/api";
 
+// shared fetch wrapper that injects the jwt auth header and handles json errors
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem("token");
   const headers: Record<string, string> = {
@@ -17,6 +18,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   });
 
   if (!res.ok) {
+    // parse error message from response body or fall back to the http status code
     const body = await res.json().catch(() => ({}));
     throw new Error(body.error || `Request failed: ${res.status}`);
   }
