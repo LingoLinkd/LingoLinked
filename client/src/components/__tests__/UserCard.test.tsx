@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import UserCard from "../UserCard";
 
+// default props shared across most usercard tests
 const defaultProps = {
   firstName: "Alice",
   lastName: "Smith",
@@ -10,6 +11,7 @@ const defaultProps = {
   learningLanguages: [{ language: "Spanish", proficiency: "beginner" }],
 };
 
+// tests for usercard rendering avatar languages score and action button
 describe("UserCard", () => {
   it("renders user name and bio", () => {
     render(<UserCard {...defaultProps} />);
