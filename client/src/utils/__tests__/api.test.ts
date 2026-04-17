@@ -12,6 +12,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+// builds a mock fetch response with an ok status and json body
 function okResponse(data: unknown) {
   return {
     ok: true,
@@ -19,6 +20,7 @@ function okResponse(data: unknown) {
   };
 }
 
+// builds a mock fetch response with a failing status for error path testing
 function errorResponse(status: number, body?: { error: string }) {
   return {
     ok: false,
@@ -27,6 +29,7 @@ function errorResponse(status: number, body?: { error: string }) {
   };
 }
 
+// tests for the api utility covering get post put delete and upload methods
 describe("api utility", () => {
   it("api.get makes GET to correct URL with auth header", async () => {
     mockFetch.mockResolvedValueOnce(okResponse({ ok: true }));
