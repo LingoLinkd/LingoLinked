@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-//Message will extend document, create fields
+// single chat message supporting text image or audio content
 export interface IMessage extends Document {
   conversation: Types.ObjectId;
   sender: Types.ObjectId;
@@ -11,7 +11,7 @@ export interface IMessage extends Document {
   createdAt: Date;
 }
 
-//Create schema for a message
+// schema for messages stored within a conversation thread
 const MessageSchema = new Schema<IMessage>(
   {
     conversation: {
@@ -20,8 +20,6 @@ const MessageSchema = new Schema<IMessage>(
       required: true,
     },
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
-
-    //Defines different types of messages, and whether a message is read for future use
     text: { type: String, default: "", maxlength: 2000 },
     image: { type: String, default: "" },
     audio: { type: String, default: "" },
@@ -30,7 +28,7 @@ const MessageSchema = new Schema<IMessage>(
   { timestamps: true }
 );
 
-//Index conversation
+// indexed by conversation and time for ordered message fetching
 MessageSchema.index({ conversation: 1, createdAt: 1 });
 
 export default mongoose.model<IMessage>("Message", MessageSchema);

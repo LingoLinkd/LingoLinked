@@ -1,11 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
+// single language entry with proficiency level
 export interface ILanguage {
   language: string;
   proficiency: "beginner" | "intermediate" | "advanced" | "fluent" | "native";
 }
 
+// full user document type including all profile fields
 export interface IUser extends Document {
   email: string;
   password: string;
@@ -26,6 +28,7 @@ export interface IUser extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
+// reusable sub-schema for language and proficiency pairs
 const LanguageSchema = new Schema<ILanguage>(
   {
     language: { type: String, required: true },
@@ -38,6 +41,7 @@ const LanguageSchema = new Schema<ILanguage>(
   { _id: false }
 );
 
+// main user document schema with all profile and language fields
 const UserSchema = new Schema<IUser>(
   {
     email: {
@@ -72,16 +76,19 @@ const UserSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
+// hashes the password before saving when modified
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
+// compares a plaintext password against the stored bcrypt hash
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
+// strips password from serialized json output
 UserSchema.set("toJSON", {
   transform(_doc, ret) {
     delete ret.password;
