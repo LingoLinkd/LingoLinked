@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
+// match request between two users with a computed compatibility score
 export interface IMatch extends Document {
   users: Types.ObjectId[];
   score: number;
@@ -10,6 +11,7 @@ export interface IMatch extends Document {
   updatedAt: Date;
 }
 
+// schema for connection requests tracking status and shared languages
 const MatchSchema = new Schema<IMatch>(
   {
     users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],

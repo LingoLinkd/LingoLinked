@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-//Conversation extends document, add participants, and metadata 
+// conversation thread tying two participants with a last message preview
 export interface IConversation extends Document {
   participants: Types.ObjectId[];
   lastMessage: string;
@@ -9,7 +9,7 @@ export interface IConversation extends Document {
   updatedAt: Date;
 }
 
-//Create conversation schema and index it with 1 participant
+// stores participants and metadata for direct message threads
 const ConversationSchema = new Schema<IConversation>(
   {
     participants: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
@@ -19,6 +19,7 @@ const ConversationSchema = new Schema<IConversation>(
   { timestamps: true }
 );
 
+// indexed for fast participant lookup
 ConversationSchema.index({ participants: 1 });
 
 export default mongoose.model<IConversation>("Conversation", ConversationSchema);

@@ -1,3 +1,4 @@
+// loads env vars before other imports
 import dotenv from "dotenv";
 import path from "path";
 
@@ -8,6 +9,7 @@ dotenv.config({
 import app from "./app";
 import { connectDB } from "./db";
 
+// default to 5000 if port not specified
 const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -15,6 +17,7 @@ if (!MONGO_URI) {
   throw new Error("Missing MONGO_URI in .env");
 }
 
+// connects to db then starts the http server
 async function main() {
   await connectDB(MONGO_URI);
   app.listen(PORT, () => console.log(`Server: http://localhost:${PORT}`));

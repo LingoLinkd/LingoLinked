@@ -1,3 +1,4 @@
+// unit tests for the authenticate jwt middleware
 import { authenticate, AuthRequest } from "../auth";
 import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
@@ -11,6 +12,7 @@ describe("authenticate middleware", () => {
   let jsonFn: jest.Mock;
   let statusFn: jest.Mock;
 
+  // fresh mock functions and request objects before each test
   beforeEach(() => {
     jsonFn = jest.fn();
     statusFn = jest.fn().mockReturnValue({ json: jsonFn });
