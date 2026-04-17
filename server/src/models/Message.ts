@@ -1,12 +1,13 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-// single chat message supporting text image or audio content
+// single chat message supporting text image, audio/video content
 export interface IMessage extends Document {
   conversation: Types.ObjectId;
   sender: Types.ObjectId;
   text: string;
   image: string;
   audio: string;
+   video: string;
   read: boolean;
   createdAt: Date;
 }
@@ -23,6 +24,7 @@ const MessageSchema = new Schema<IMessage>(
     text: { type: String, default: "", maxlength: 2000 },
     image: { type: String, default: "" },
     audio: { type: String, default: "" },
+    video: { type: String, default: "" },
     read: { type: Boolean, default: false },
   },
   { timestamps: true }
