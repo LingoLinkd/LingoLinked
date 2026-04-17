@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../utils/api";
 import { LANGUAGES } from "../utils/languages";
@@ -6,7 +6,6 @@ import Navbar from "../components/Navbar";
 import { Plus, Calendar, Clock, MapPin, Users, X, CalendarPlus } from "lucide-react";
 import styles from "./Events.module.css";
 
-//Organizer info for an event
 interface EventOrganizer {
   _id: string;
   firstName: string;
@@ -14,7 +13,6 @@ interface EventOrganizer {
   profilePicture: string;
 }
 
-//Event data structure
 interface EventData {
   _id: string;
   title: string;
@@ -30,12 +28,12 @@ interface EventData {
 
 export default function Events() {
   const { user } = useAuth();
-  //Store events and loading state
   const [events, setEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  //Create form state
+
+  // Create form state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -46,7 +44,6 @@ export default function Events() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
 
-  //Fetch all upcoming events from the api
   const fetchEvents = () => {
     api
       .get<{ events: EventData[] }>("/events")
@@ -55,14 +52,18 @@ export default function Events() {
       .finally(() => setLoading(false));
   };
 
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   useEffect(() => {
     fetchEvents();
+    pollRef.current = setInterval(fetchEvents, 30000);
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
   }, []);
 
-  //Handle create event form submission
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
-    //Validate required fields before submitting
     if (!title || !description || !date || !time || !location) {
       setError("Please fill in all required fields");
       return;
@@ -77,10 +78,8 @@ export default function Events() {
         time,
         location,
         language,
-        //Default to 0 (unlimited) if no max set
         maxAttendees: maxAttendees ? Number(maxAttendees) : 0,
       });
-      //Reset form and close modal on success
       setShowCreate(false);
       setTitle("");
       setDescription("");
@@ -97,7 +96,6 @@ export default function Events() {
     }
   };
 
-  //Register current user for an event
   const handleRegister = async (eventId: string) => {
     setActionLoading(eventId);
     try {
@@ -110,7 +108,6 @@ export default function Events() {
     }
   };
 
-  //Unregister current user from an event
   const handleUnregister = async (eventId: string) => {
     setActionLoading(eventId);
     try {
@@ -123,12 +120,10 @@ export default function Events() {
     }
   };
 
-  //Check if current user is already registered
   const isRegistered = (event: EventData) => event.attendees.some((a) => a._id === user?._id);
-  //Check if current user is the organizer
+
   const isOrganizer = (event: EventData) => event.organizer._id === user?._id;
 
-  //Format date string for display
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-US", {
       weekday: "short",
@@ -154,7 +149,6 @@ export default function Events() {
           </div>
 
           {loading ? (
-            //Show skeleton cards while loading
             <div className={styles.grid}>
               {[1, 2, 3].map((i) => (
                 <div key={i} className={styles.skeleton}>
@@ -178,14 +172,12 @@ export default function Events() {
               ))}
             </div>
           ) : events.length === 0 ? (
-            //Empty state when no events exist
             <div className={styles.empty}>
               <CalendarPlus size={48} />
               <p className={styles.emptyTitle}>No upcoming events</p>
               <p className={styles.emptyText}>Be the first to create a language exchange event!</p>
             </div>
           ) : (
-            //Render event cards
             <div className={styles.grid}>
               {events.map((event) => (
                 <div key={event._id} className={styles.card}>
@@ -193,7 +185,9 @@ export default function Events() {
                     <h3 className={styles.cardTitle}>{event.title}</h3>
                     {event.language && <span className={styles.langTag}>{event.language}</span>}
                   </div>
+
                   <p className={styles.cardDesc}>{event.description}</p>
+
                   <div className={styles.details}>
                     <div className={styles.detail}>
                       <span className={styles.detailIcon}>
@@ -223,14 +217,15 @@ export default function Events() {
                       </span>
                     </div>
                   </div>
+
                   <div className={styles.organizer}>
                     <span className={styles.organizerLabel}>Organized by</span>
                     <span className={styles.organizerName}>
                       {event.organizer.firstName} {event.organizer.lastName}
                     </span>
                   </div>
+
                   {event.attendees.length > 0 && (
-                    //Show up to 5 attendee avatars then a +N overflow count
                     <div className={styles.attendeeRow}>
                       {event.attendees.slice(0, 5).map((a) => (
                         <div
@@ -253,6 +248,7 @@ export default function Events() {
                       )}
                     </div>
                   )}
+
                   <div className={styles.cardActions}>
                     {isOrganizer(event) ? (
                       <span className={styles.organizerBadge}>You are the organizer</span>
@@ -268,7 +264,6 @@ export default function Events() {
                       <button
                         className={styles.registerBtn}
                         onClick={() => handleRegister(event._id)}
-                        //Disable if full
                         disabled={
                           actionLoading === event._id ||
                           (event.maxAttendees > 0 && event.attendees.length >= event.maxAttendees)
@@ -289,7 +284,7 @@ export default function Events() {
         </div>
       </main>
 
-      {/*Create event modal, closes when clicking outside*/}
+      {/* Create Event Modal */}
       {showCreate && (
         <div
           className={styles.modalOverlay}
@@ -304,7 +299,9 @@ export default function Events() {
                 <X size={20} />
               </button>
             </div>
+
             {error && <div className={styles.error}>{error}</div>}
+
             <form onSubmit={handleCreate} className={styles.form}>
               <div className={styles.field}>
                 <label className={styles.label}>Title *</label>
@@ -316,6 +313,7 @@ export default function Events() {
                   maxLength={200}
                 />
               </div>
+
               <div className={styles.field}>
                 <label className={styles.label}>Description *</label>
                 <textarea
@@ -327,6 +325,7 @@ export default function Events() {
                   rows={3}
                 />
               </div>
+
               <div className={styles.row}>
                 <div className={styles.field}>
                   <label className={styles.label}>Date *</label>
@@ -347,6 +346,7 @@ export default function Events() {
                   />
                 </div>
               </div>
+
               <div className={styles.field}>
                 <label className={styles.label}>Location *</label>
                 <input
@@ -356,6 +356,7 @@ export default function Events() {
                   placeholder="e.g. DCC 308, RPI Campus"
                 />
               </div>
+
               <div className={styles.row}>
                 <div className={styles.field}>
                   <label className={styles.label}>Language (optional)</label>
@@ -384,6 +385,7 @@ export default function Events() {
                   />
                 </div>
               </div>
+
               <div className={styles.formActions}>
                 <button
                   type="button"
