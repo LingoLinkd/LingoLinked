@@ -1,3 +1,4 @@
+
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -48,6 +49,7 @@ beforeEach(() => {
   });
 });
 
+// helper wraps navbar in a memory router for isolated rendering
 function renderNavbar() {
   return render(
     <MemoryRouter>
@@ -55,7 +57,7 @@ function renderNavbar() {
     </MemoryRouter>
   );
 }
-
+// tests for navbar links branding avatar and logout behavior
 describe("Navbar", () => {
   it("renders navigation links for Home, Matches, Messages, and Events", () => {
     renderNavbar();

@@ -1,3 +1,4 @@
+// tests for the language badge component rendering and variant classes
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import LanguageBadge from "../LanguageBadge";
