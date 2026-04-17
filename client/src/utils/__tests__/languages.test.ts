@@ -1,3 +1,4 @@
+// tests for the language constant arrays exported from languages util
 import { describe, it, expect } from "vitest";
 import { LANGUAGES, PROFICIENCY_LEVELS, INTEREST_OPTIONS } from "../languages";
 
