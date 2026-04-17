@@ -34,8 +34,11 @@ export default function UserCard({
   onAction,
   actionDisabled,
 }: Props) {
+
+  //Compute two letter initials for the avatar
   const initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
 
+  //Renders avatar, name, languages score, and an optional action button
   return (
     <div className={styles.card} role="article" aria-label={`${firstName} ${lastName}`}>
       <div className={styles.header}>

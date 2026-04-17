@@ -22,6 +22,7 @@ export default function Matches() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
+  //Loads matches from the api filtered by the active tab status
   const fetchMatches = useCallback(() => {
     setLoading(true);
     api
@@ -35,6 +36,7 @@ export default function Matches() {
     fetchMatches();
   }, [fetchMatches]);
 
+  //Accepts an incoming connection request then refreshes the list
   const handleAccept = async (matchId: string) => {
     setActionLoading(matchId);
     try {
@@ -47,6 +49,7 @@ export default function Matches() {
     }
   };
 
+  //Declines a connection request then refreshes the list
   const handleDecline = async (matchId: string) => {
     setActionLoading(matchId);
     try {
@@ -59,10 +62,12 @@ export default function Matches() {
     }
   };
 
+  //Returns the match participant who is not the current user
   const getOtherUser = (match: Match) => {
     return match.users.find((u) => u._id !== user?._id) || match.users[0];
   };
 
+  //Sees if user didn't send the match, but is incoming
   const isIncoming = (match: Match) => match.initiator !== user?._id;
 
   return (
