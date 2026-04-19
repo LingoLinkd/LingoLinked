@@ -62,10 +62,12 @@ export default function Messages() {
       .finally(() => setLoadingConvs(false));
   }, []);
 
+  // fetch the message list immediately then poll every 3 seconds for new messages
   useEffect(() => {
     if (!activeConv) return;
 
     setLoadingMsgs(true);
+    // inner function reused by both the initial load and the polling interval
     const fetchMessages = () => {
       api
         .get<{ messages: Message[] }>(`/messages/${activeConv}`)
@@ -75,17 +77,21 @@ export default function Messages() {
     };
 
     fetchMessages();
+    // start polling interval so messages update live without user action
     pollRef.current = setInterval(fetchMessages, 3000);
 
+    // stop the interval when the active conversation changes or component unmounts
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, [activeConv]);
 
+  // scroll to the bottom of the message list whenever new messages are added
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // sends the typed text message and appends it to the local messages list
   const handleSend = async (e: FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !activeConv) return;
@@ -111,6 +117,7 @@ export default function Messages() {
     }
   };
 
+  // wraps the selected image file in formdata and uploads it to the conversation
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !activeConv) return;
@@ -138,6 +145,7 @@ export default function Messages() {
     }
   };
 
+  // requests microphone access and initializes the mediarecorder for voice messages
    const handleVideoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !activeConv) return;
@@ -173,12 +181,16 @@ export default function Messages() {
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
+      // collect each audio chunk as it becomes available during recording
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data);
       };
 
+      // when recording stops release the mic then combine chunks and upload
       mediaRecorder.onstop = async () => {
+        // stop all mic tracks to release the microphone
         stream.getTracks().forEach((track) => track.stop());
+        // combine all recorded chunks into a single blob for uploading
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
         if (audioBlob.size === 0) return;
 
@@ -212,6 +224,7 @@ export default function Messages() {
     }
   };
 
+  // stops the mediarecorder which triggers the onstop handler to upload the audio
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop();
@@ -219,13 +232,16 @@ export default function Messages() {
     setRecording(false);
   };
 
+  // finds the conversation participant who is not the currently logged in user
   const getOtherParticipant = (conv: Conversation): Participant => {
     return conv.participants.find((p) => p._id !== user?._id) || conv.participants[0];
   };
 
+  // returns a short readable label: time of day today yesterday weekday or short date
   const formatTime = (dateStr: string) => {
     const date = new Date(dateStr);
     const now = new Date();
+    // calculate whole days elapsed between the message date and right now
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     if (diffDays === 1) return "Yesterday";

@@ -47,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
   const [loading, setLoading] = useState(() => !!token);
 
+    // on mount validates the stored token by fetching the logged in user profile
   useEffect(() => {
     if (!token) return;
 
@@ -54,12 +55,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .get<{ user: User }>("/auth/me")
       .then(({ user }) => setUser(user))
       .catch(() => {
+        // token is invalid or expired so clear it and fall back to logged out state
         localStorage.removeItem("token");
         setToken(null);
       })
       .finally(() => setLoading(false));
   }, [token]);
 
+  // posts credentials to the api then stores the token and updates user state
   const login = useCallback(async (email: string, password: string) => {
     const { token, user } = await api.post<{ token: string; user: User }>("/auth/login", {
       email,
@@ -70,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(user);
   }, []);
 
+  // calls the register endpoint then stores the token and sets initial user state
   const register = useCallback(
     async (data: { email: string; password: string; firstName: string; lastName: string }) => {
       const { token, user } = await api.post<{ token: string; user: User }>("/auth/register", data);
@@ -80,17 +84,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  // removes the token from storage and clears all user state
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
   }, []);
 
+  // sends partial profile fields to the api and syncs the local user state
   const updateUser = useCallback(async (data: Partial<User>) => {
     const { user } = await api.put<{ user: User }>("/users/profile", data);
     setUser(user);
   }, []);
 
+  // fetches fresh user data from the api to keep local state in sync
   const refreshUser = useCallback(async () => {
     const { user } = await api.get<{ user: User }>("/auth/me");
     setUser(user);
@@ -106,6 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
+// throws if called outside of the authprovider tree
 export function useAuth(): AuthState {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");

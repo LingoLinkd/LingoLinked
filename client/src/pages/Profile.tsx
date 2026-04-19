@@ -36,6 +36,7 @@ export default function Profile() {
   const [interests, setInterests] = useState<string[]>(user?.interests || []);
   const [accountStatus, setAccountStatus] = useState(user?.accountStatus || "active");
 
+  // immutably updates one field of a language entry at a given index in the list
   const updateLang = (
     index: number,
     field: "language" | "proficiency",
@@ -48,12 +49,14 @@ export default function Profile() {
     setList(updated);
   };
 
+  // filters incomplete language rows then persists all profile changes via the api
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setMessage("");
 
     try {
+      // discard any rows where both language and proficiency have not been selected
       const validKnown = knownLanguages.filter((l) => l.language && l.proficiency);
       const validLearning = learningLanguages.filter((l) => l.language && l.proficiency);
 
@@ -79,6 +82,7 @@ export default function Profile() {
     }
   };
 
+  // resets every editable field back to the original saved user data and exits edit mode
   const cancelEdit = () => {
     setFirstName(user?.firstName || "");
     setLastName(user?.lastName || "");
@@ -98,6 +102,7 @@ export default function Profile() {
     setMessage("");
   };
 
+  // uploads the selected image file then refreshes the profile to show the new picture
   const handlePictureUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -116,6 +121,7 @@ export default function Profile() {
     }
   };
 
+  // two letter avatar fallback derived from first and last name initials
   const initials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : "";
 
   return (
