@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import styles from "./Login.module.css";
 
+//Multilingual greetings displayed on the decorative left panel
 const greetings = [
   { text: "Hello", lang: "English" },
   { text: "Hola", lang: "Spanish" },
@@ -19,6 +20,7 @@ const greetings = [
   { text: "Namaste", lang: "Hindi" },
 ];
 
+//Submits credentials and navigates to dashboard on success
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import { Router, Response } from "express";
 import Conversation from "../models/Conversation";
 import Message from "../models/Message";
 import { authenticate, AuthRequest } from "../middleware/auth";
-import { uploadMessageImage, uploadMessageAudio } from "../middleware/upload";
+import { uploadMessageImage, uploadMessageAudio, uploadMessageVideo } from "../middleware/upload";
 
 const router = Router();
 
@@ -110,7 +110,7 @@ router.post(
         return;
       }
 
-      const imageUrl = `/uploads/messages/${req.file.filename}`;
+      const imageUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
       const message = await Message.create({
         conversation: conversation._id,
         sender: req.userId,
@@ -156,7 +156,7 @@ router.post(
         return;
       }
 
-      const audioUrl = `/uploads/audio/${req.file.filename}`;
+      const audioUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
       const message = await Message.create({
         conversation: conversation._id,
         sender: req.userId,
@@ -172,6 +172,51 @@ router.post(
       res.status(201).json({ message: populated });
     } catch (err) {
       console.error("Send audio message error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
+
+// POST /api/messages/:conversationId/video - send a video message
+router.post(
+  "/:conversationId/video",
+  authenticate,
+  uploadMessageVideo.single("video"),
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const conversation = await Conversation.findById(req.params.conversationId);
+      if (!conversation) {
+        res.status(404).json({ error: "Conversation not found" });
+        return;
+      }
+
+      const isParticipant = conversation.participants.some((id) => id.toString() === req.userId);
+      if (!isParticipant) {
+        res.status(403).json({ error: "Not authorized" });
+        return;
+      }
+
+      if (!req.file) {
+        res.status(400).json({ error: "No video file provided" });
+        return;
+      }
+
+      const videoUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+      const message = await Message.create({
+        conversation: conversation._id,
+        sender: req.userId,
+        video: videoUrl,
+      });
+
+      conversation.lastMessage = "[Video]";
+      conversation.lastMessageAt = new Date();
+      await conversation.save();
+
+      const populated = await message.populate("sender", "firstName lastName profilePicture");
+
+      res.status(201).json({ message: populated });
+    } catch (err) {
+      console.error("Send video message error:", err);
       res.status(500).json({ error: "Server error" });
     }
   }

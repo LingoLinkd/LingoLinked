@@ -18,6 +18,16 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [connectingId, setConnectingId] = useState<string | null>(null);
   const [connectedIds, setConnectedIds] = useState<Set<string>>(new Set());
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    const key = `visited_${user._id}`;
+    if (!localStorage.getItem(key)) {
+      localStorage.setItem(key, "1");
+      setIsFirstVisit(true);
+    }
+  }, [user]);
 
   useEffect(() => {
     api
@@ -27,6 +37,7 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
+  // sends a match request to the api and marks that user as connected in local state
   const handleConnect = async (userId: string) => {
     setConnectingId(userId);
     try {
@@ -39,6 +50,7 @@ export default function Dashboard() {
     }
   };
 
+  // true when the user has at least one known language and a bio filled in
   const profileComplete = user && user.knownLanguages.length > 0 && user.bio;
 
   return (
@@ -49,7 +61,7 @@ export default function Dashboard() {
           {/* Welcome banner */}
           <section className={styles.welcome}>
             <div className={styles.welcomeContent}>
-              <h1 className={styles.welcomeTitle}>Welcome back, {user?.firstName}</h1>
+              <h1 className={styles.welcomeTitle}>{isFirstVisit ? "Welcome" : "Welcome back"}, {user?.firstName}</h1>
               <p className={styles.welcomeSubtitle}>
                 Discover language partners matched to your goals
               </p>

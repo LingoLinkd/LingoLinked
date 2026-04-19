@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, type FormEvent, type ChangeEvent } from "r
 import { useAuth } from "../context/AuthContext";
 import { api } from "../utils/api";
 import Navbar from "../components/Navbar";
-import { Send, Image, Mic, Square, MessageSquare, Loader } from "lucide-react";
+import { Send, Image, Mic, Square, MessageSquare, Loader, Video  } from "lucide-react";
 import styles from "./Messages.module.css";
 
 interface Participant {
@@ -26,6 +26,7 @@ interface Message {
   text: string;
   image: string;
   audio: string;
+  video: string;
   createdAt: string;
   read: boolean;
 }
@@ -42,6 +43,7 @@ export default function Messages() {
   const [sendingImage, setSendingImage] = useState(false);
   const [recording, setRecording] = useState(false);
   const [sendingAudio, setSendingAudio] = useState(false);
+  const [sendingVideo, setSendingVideo] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -144,6 +146,33 @@ export default function Messages() {
   };
 
   // requests microphone access and initializes the mediarecorder for voice messages
+   const handleVideoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeConv) return;
+    setSendingVideo(true);
+    try {
+      const formData = new FormData();
+      formData.append("video", file);
+      const { message } = await api.upload<{ message: Message }>(
+        `/messages/${activeConv}/video`,
+        formData
+      );
+      setMessages((prev) => [...prev, message]);
+      setConversations((prev) =>
+        prev.map((c) =>
+          c._id === activeConv
+            ? { ...c, lastMessage: "[Video]", lastMessageAt: new Date().toISOString() }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error("Video upload error:", err);
+    } finally {
+      setSendingVideo(false);
+      e.target.value = "";
+    }
+  };
+
   const startRecording = async () => {
     if (!activeConv) return;
     try {
@@ -346,6 +375,11 @@ export default function Messages() {
                               <source src={msg.audio} type="audio/webm" />
                             </audio>
                           )}
+                          {msg.video && (
+                            <video controls className={styles.messageVideo}>
+                              <source src={msg.video} type="video/mp4" />
+                            </video>
+                          )}
                           {msg.text && <p className={styles.messageText}>{msg.text}</p>}
                           <span className={styles.messageTime}>{formatTime(msg.createdAt)}</span>
                         </div>
@@ -369,6 +403,20 @@ export default function Messages() {
                     onChange={handleImageUpload}
                     className={styles.fileInput}
                     disabled={sendingImage}
+                  />
+                </label>
+                <label className={styles.imageUploadBtn} title="Send video">
+                  {sendingVideo ? (
+                    <Loader size={18} className={styles.spinning} />
+                  ) : (
+                    <Video size={18} />
+                  )}
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={handleVideoUpload}
+                    className={styles.fileInput}
+                    disabled={sendingVideo}
                   />
                 </label>
                 <button
